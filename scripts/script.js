@@ -2,6 +2,7 @@ var Orders = [];
 var Employees = [];
 var Matches = [];
 var Stations = [];
+var Pairs = [];
 
 class Employee {
     constructor(id, current_station, status){
@@ -29,6 +30,15 @@ class Station {
     }
 }
 
+class Pair {
+    constructor(id, order, employee, order_time){
+        this.id = id;
+        this.order = order;
+        this.employee = employee;
+        this.order_time = order_time;
+    }
+}
+
 
 function updateOrderStatus(orderId, newStatus) {
     fetch('database_update_order_status.php', {
@@ -50,6 +60,32 @@ function updateOrderStatus(orderId, newStatus) {
         console.error('Error:', error);
     });
 }
+
+function fillPairs(match) {
+    fetch('database_update_pairs.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ 
+            orderId: match.order.id_order, 
+            employeeId: match.employee.id,
+            orderTime: match.order.order_time
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.error) {
+            console.error('Error:', data.error);
+            return;
+        }
+        console.log('Order status updated successfully:', data);
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+}
+
 
 function stableMarriage(orders, employees, stations) {
     const unmatchedOrders = [...orders.filter(order => order.order_status === 'pending')];
@@ -77,7 +113,7 @@ function stableMarriage(orders, employees, stations) {
 
         if (bestMatch) {
             matches.push({ order, employee: bestMatch });
-            updateOrderStatus(order.id_order, 'completed');
+            // updateOrderStatus(order.id_order, 'completed');
             if (bestMatch.status === 'free') {
                 bestMatch.status = 'working';
             }
@@ -175,12 +211,12 @@ function draw_employees(){
 function draw_pairs(){
     const mainContainer = document.getElementById('data_container_pairs');
     mainContainer.innerHTML = '<h1>PAIRS</h1><h2>id_order | employee.id | order.id_user</h2>';
-    Matches.forEach(row => {
+    Pairs.forEach(row => {
         let color = '#00ff00';
         const rowElement = document.createElement('div');
         rowElement.className = 'col';
         rowElement.style = `color: ${color}`;
-        rowElement.innerHTML = `<p>${row.order.id_order} | ${row.employee.id} | ${row.order.id_user}</p>`;
+        rowElement.innerHTML = `<p>${row.order} | ${row.employee} | ${row.order_time}</p>`;
         mainContainer.appendChild(rowElement);
     });
 }
@@ -222,22 +258,80 @@ function findShortestPath(stations, start, end) {
     return null;
 }
 
+function fetchPairs() {
+    fetch('database_fetch_pairs.php')
+        .then(response => response.json())
+        .then(data => {
+            if (data.error) {
+                console.error('Error:', data.error);
+                return;
+            }
+            Pairs = [];
+            data.forEach(row => {
+                Pairs.push(new Pair(row.id, row.order_id, row.employee_id, row.order_time));
+            });
+            // console.log('Pairs:', Pairs);
+        });
+}
+
+function completeOrder(orderId) {
+    fetch('database_complete_order.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ orderId })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.error) {
+            console.error('Error:', data.error);
+            return;
+        }
+        console.log('Order completed successfully:', data);
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+}
+    
+
 document.addEventListener('DOMContentLoaded', function() {
     setInterval(() => {
 
         fetch_orders();
         fetch_employees();
         fetch_stations();
+        fetchPairs();
 
         setTimeout(() => {
-            console.log('Orders:', Orders);
-            console.log('Employees:', Employees);
-            console.log('Stations:', Stations);
+            // console.log('Orders:', Orders);
+            // console.log('Employees:', Employees);
+            // console.log('Stations:', Stations);
         }, 200);
 
         setTimeout(() => {
-            Matches = stableMarriage(Orders, Employees);
-            console.log('Matches:', Matches);
+            if(Orders.length > 0){
+                Matches = stableMarriage(Orders, Employees);
+                Matches.forEach(match => { 
+                    fillPairs(match);                
+                });
+            }
+            else{
+                console.warn('No orders to process');
+            }
+            Orders = [];
+            // console.log('Matches:', Matches);
+        }, 200);
+
+        setTimeout(() => {
+            Pairs.forEach(pair => {
+                const orderTime = new Date(pair.order_time.replace(' ', 'T'));
+                if(new Date() > orderTime) {
+                    console.log("Completing order:", pair.order);
+                    completeOrder(pair.order);
+                }
+            });
         }, 200);
 
         setTimeout(() => {
@@ -246,5 +340,5 @@ document.addEventListener('DOMContentLoaded', function() {
             draw_pairs();
         }, 200);
 
-    }, 4000);
+    }, 1500);
 })

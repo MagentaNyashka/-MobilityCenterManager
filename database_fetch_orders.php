@@ -14,7 +14,17 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
-$sql = "SELECT * FROM orders";
+$sql = "SELECT *
+FROM orders
+WHERE order_time >= NOW() - INTERVAL 1 HOUR
+  AND NOT EXISTS (
+      SELECT 1
+      FROM pairs
+      WHERE pairs.order_id = orders.id_order
+  )
+  AND order_status = 'pending';
+";
+
 $result = $conn->query($sql);
 
 $posts = array();
@@ -23,8 +33,7 @@ if ($result->num_rows > 0) {
         $posts[] = $row;
     }
 } else {
-    echo json_encode(["error" => "No posts found"]);
-    exit();
+    $posts[] = ["error" => "No available orders found"];
 }
 
 header('Content-Type: application/json');

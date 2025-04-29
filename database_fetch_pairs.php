@@ -14,7 +14,7 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
-$sql = "SELECT * FROM connections";
+$sql = "SELECT * FROM pairs";
 $result = $conn->query($sql);
 
 $posts = array();
@@ -23,7 +23,7 @@ if ($result->num_rows > 0) {
         $posts[] = $row;
     }
 } else {
-    echo json_encode(["error" => "No stations found"]);
+    echo json_encode(["error" => "No pairs found"]);
     exit();
 }
 

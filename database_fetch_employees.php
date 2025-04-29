@@ -23,7 +23,7 @@ if ($result->num_rows > 0) {
         $posts[] = $row;
     }
 } else {
-    echo json_encode(["error" => "No posts found"]);
+    echo json_encode(["error" => "No available employees found"]);
     exit();
 }
 
