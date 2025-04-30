@@ -5,20 +5,22 @@ var Stations = [];
 var Pairs = [];
 
 class Employee {
-    constructor(id, current_station, status){
+    constructor(id, current_station, status, end_time){
         this.id = id;
         this.current_station = current_station;
         this.status = status;
+        this.end_time = end_time;
     }
 }
 
 class Order {
-    constructor(id_order, id_user, station, order_time, order_status){
+    constructor(id_order, id_user, station, order_time, order_status, employees_required){
         this.id_order = id_order;
         this.id_user = id_user;
         this.station = station;
         this.order_time = order_time;
         this.order_status = order_status;
+        this.employees_required = employees_required;
     }
 }
 
@@ -51,17 +53,18 @@ function updateOrderStatus(orderId, newStatus) {
     .then(response => response.json())
     .then(data => {
         if (data.error) {
-            console.error('Error:', data.error);
+            // console.error('Error:', data.error);
             return;
         }
-        console.log('Order status updated successfully:', data);
+        // console.log('Order status updated successfully:', data);
     })
     .catch(error => {
-        console.error('Error:', error);
+        // console.error('Error:', error);
     });
 }
 
 function fillPairs(match) {
+    console.log("Filling pairs...");
     fetch('database_update_pairs.php', {
         method: 'POST',
         headers: {
@@ -76,76 +79,79 @@ function fillPairs(match) {
     .then(response => response.json())
     .then(data => {
         if (data.error) {
-            console.error('Error:', data.error);
+            // console.error('Error:', data.error);
             return;
         }
-        console.log('Order status updated successfully:', data);
+        // console.log('Order status updated successfully:', data);
     })
     .catch(error => {
-        console.error('Error:', error);
+        // console.error('Error:', error);
     });
 }
 
-
 function stableMarriage(orders, employees, stations) {
-    const unmatchedOrders = [...orders.filter(order => order.order_status === 'pending')];
+    const unmatchedOrders = [...orders];
     const unmatchedEmployees = [...employees];
 
     const matches = [];
 
     while (unmatchedOrders.length > 0) {
         const order = unmatchedOrders.shift();
+        console.log(`Finding match for ${order.id_order}`);
+        while(unmatchedEmployees.length > 0 && order.employees_required > 0){
+            unmatchedEmployees.sort((a, b) => {
+                if (a.status === 'free' && b.status !== 'free') return -1;
+                if (a.status !== 'free' && b.status === 'free') return 1;
 
-        unmatchedEmployees.sort((a, b) => {
-            if (a.status === 'free' && b.status !== 'free') return -1;
-            if (a.status !== 'free' && b.status === 'free') return 1;
+                const pathA = findShortestPath(stations, a.current_station, order.station);
+                const pathB = findShortestPath(stations, b.current_station, order.station);
 
-            const pathA = findShortestPath(stations, a.current_station, order.station);
-            const pathB = findShortestPath(stations, b.current_station, order.station);
+                const distanceA = pathA ? pathA.length : Infinity;
+                const distanceB = pathB ? pathB.length : Infinity;
 
-            const distanceA = pathA ? pathA.length : Infinity;
-            const distanceB = pathB ? pathB.length : Infinity;
+                return distanceA - distanceB;
+            });
 
-            return distanceA - distanceB;
-        });
+            const bestMatch = unmatchedEmployees.shift();
 
-        const bestMatch = unmatchedEmployees.shift();
-
-        if (bestMatch) {
-            matches.push({ order, employee: bestMatch });
-            // updateOrderStatus(order.id_order, 'completed');
-            if (bestMatch.status === 'free') {
-                bestMatch.status = 'working';
+            if (bestMatch) {
+                console.log(`Found best match for ${order.id_order} -> ${bestMatch.id}`)
+                order.employees_required -= 1;
+                matches.push({ order, employee: bestMatch });
+            } else {
+                // console.warn(`No available employee for order ${order.id_order}`);
             }
-        } else {
-            console.warn(`No available employee for order ${order.id_order}`);
         }
     }
 
-    return matches;
+    Matches = matches;
 }
 
 function fetch_orders(){
+    console.log("Fetching orders...");
     fetch('database_fetch_orders.php')
         .then(response => response.json())
         .then(data => {
             if (data.error){
-                console.error('Error:', data.error);
+                // console.error('Error:', data.error);
                 return;
             }
             Orders = [];
-            data.forEach(row => {
-                Orders.push(new Order(row.id_order, row.id_user, row.station, row.order_time, row.order_status));
-            });
+            if(data.length > 0 && data[0][0] != -1){
+                data.forEach(row => {
+                    Orders.push(new Order(row.id_order, row.id_user, row.station, row.order_time, row.order_status, row.employees_required));
+                });
+            }
         });
 }
 
 function fetch_employees(){
+    console.log("Fetching employees...");
     fetch('database_fetch_employees.php')
         .then(response => response.json())
         .then(data => {
             if (data.error){
-                console.error('Error:', data.error);
+                // console.error('Error:', data.error);
                 return;
             }
             Employees = [];
@@ -156,11 +162,12 @@ function fetch_employees(){
 }
 
 function fetch_stations(){
+    console.log("Fetching stations...");
     fetch('database_fetch_stations.php')
         .then(response => response.json())
         .then(data => {
             if (data.error){
-                console.error('Error:', data.error);
+                // console.error('Error:', data.error);
                 return;
             }
             Stations = [];
@@ -259,11 +266,12 @@ function findShortestPath(stations, start, end) {
 }
 
 function fetchPairs() {
+    console.log("Fetching pairs...");
     fetch('database_fetch_pairs.php')
         .then(response => response.json())
         .then(data => {
             if (data.error) {
-                console.error('Error:', data.error);
+                // console.error('Error:', data.error);
                 return;
             }
             Pairs = [];
@@ -285,59 +293,72 @@ function completeOrder(orderId) {
     .then(response => response.json())
     .then(data => {
         if (data.error) {
-            console.error('Error:', data.error);
+            // console.error('Error:', data.error);
             return;
         }
-        console.log('Order completed successfully:', data);
+        // console.log('Order completed successfully:', data);
     })
     .catch(error => {
-        console.error('Error:', error);
+        // console.error('Error:', error);
     });
 }
+
+function makePairs(){
+    console.log("Making pairs...");
+    if(Matches.length > 0){
+        Matches.forEach(match => { 
+            fillPairs(match);                
+        });
+    }
+    else{
+        // console.warn('No orders to process');
+    }
+}
     
+function updatePairs(){
+    console.log("Updating pairs...");
+    Pairs.forEach(pair => {
+        const orderTime = new Date(pair.order_time.replace(' ', 'T'));
+        if(new Date() > orderTime) {
+            // console.log("Completing order:", pair.order);
+            completeOrder(pair.order);
+        }
+    });
+}
+
+function resetObjects(){
+    console.log("Reseting objects...");
+    Orders = [];
+    Employees = [];
+    Matches = [];
+    Stations = [];
+    Pairs = [];
+}
 
 document.addEventListener('DOMContentLoaded', function() {
     setInterval(() => {
 
         fetch_orders();
         fetch_employees();
-        fetch_stations();
+        fetch_stations();      
+        
+        console.log("Orders: ", Orders);
+        console.log("Employees: ", Employees);
+
+        if(Orders.length > 0){
+            stableMarriage(Orders, Employees, Stations);
+        }
+
+        console.log("Matches: ", Matches);
+        
+        makePairs();
+
+        resetObjects();
+
         fetchPairs();
 
         setTimeout(() => {
-            // console.log('Orders:', Orders);
-            // console.log('Employees:', Employees);
-            // console.log('Stations:', Stations);
-        }, 200);
-
-        setTimeout(() => {
-            if(Orders.length > 0){
-                Matches = stableMarriage(Orders, Employees);
-                Matches.forEach(match => { 
-                    fillPairs(match);                
-                });
-            }
-            else{
-                console.warn('No orders to process');
-            }
-            Orders = [];
-            // console.log('Matches:', Matches);
-        }, 200);
-
-        setTimeout(() => {
-            Pairs.forEach(pair => {
-                const orderTime = new Date(pair.order_time.replace(' ', 'T'));
-                if(new Date() > orderTime) {
-                    console.log("Completing order:", pair.order);
-                    completeOrder(pair.order);
-                }
-            });
-        }, 200);
-
-        setTimeout(() => {
-            draw_orders();
-            draw_employees();
-            draw_pairs();
+            updatePairs();
         }, 200);
 
     }, 1500);

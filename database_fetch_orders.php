@@ -22,7 +22,7 @@ WHERE order_time >= NOW() - INTERVAL 1 HOUR
       FROM pairs
       WHERE pairs.order_id = orders.id_order
   )
-  AND order_status = 'pending';
+  AND order_status = 'active';
 ";
 
 $result = $conn->query($sql);
@@ -33,7 +33,7 @@ if ($result->num_rows > 0) {
         $posts[] = $row;
     }
 } else {
-    $posts[] = ["error" => "No available orders found"];
+    $posts[] = [-1];
 }
 
 header('Content-Type: application/json');
