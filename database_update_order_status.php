@@ -4,10 +4,12 @@ ini_set('display_errors', 1);
 
 header('Content-Type: application/json');
 
-$servername = "localhost";
-$username = "root";
-$password = "Bghujknmol123";
-$dbname = "mobile_center_db";
+require_once 'config.php';
+
+$servername = $DB_HOST;
+$username = $DB_USER;
+$password = $DB_PASS;
+$dbname = $DB_NAME;
 
 $conn = new mysqli($servername, $username, $password, $dbname, 3306);
 

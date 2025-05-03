@@ -3,10 +3,12 @@ error_reporting(E_ALL);
 ini_set('display_errors', 1);
 header('Content-Type: application/json');
 
-$servername = "localhost";
-$username = "root";
-$password = "Bghujknmol123";
-$dbname = "mobile_center_db";
+require_once 'config.php';
+
+$servername = $DB_HOST;
+$username = $DB_USER;
+$password = $DB_PASS;
+$dbname = $DB_NAME;
 
 $conn = new mysqli($servername, $username, $password, $dbname, 3306);
 if ($conn->connect_error) {
@@ -18,6 +20,10 @@ $input = json_decode(file_get_contents('php://input'), true);
 $orderId = $input['orderId'] ?? null;
 $employeeId = $input['employeeId'] ?? null;
 $orderTime = $input['orderTime'] ?? null;
+$endTime = $input['endTime'] ?? null;
+
+$end = date("Y-m-d H:i:s", strtotime($orderTime . " + $endTime minutes"));
+echo($end);
 
 if (!$orderId || !$employeeId || !$orderTime) {
     echo json_encode(['error' => 'Invalid input']);
@@ -28,8 +34,8 @@ $conn->begin_transaction();
 
 try {
     // 1. pairs
-    $stmt1 = $conn->prepare("INSERT INTO pairs (order_id, employee_id, order_time) VALUES (?, ?, ?)");
-    $stmt1->bind_param("iis", $orderId, $employeeId, $orderTime);
+    $stmt1 = $conn->prepare("INSERT INTO pairs (order_id, employee_id, order_time, end_time) VALUES (?, ?, ?, ?)");
+    $stmt1->bind_param("iiss", $orderId, $employeeId, $orderTime, $end);
     $stmt1->execute();
     $stmt1->close();
 
