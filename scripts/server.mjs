@@ -144,19 +144,26 @@ async function fetchPairs() {
 
 async function run() {
     console.log("Starting execution...");
-    await fetchEmployees();
-    await fetchOrders();
-    await fetchStations();
-    await fetchPairs();
+    try {
+        await fetchEmployees();
+        await fetchOrders();
+        await fetchStations();
+        await fetchPairs();
 
-    console.log("Orders:", Orders);
-    console.log("Employees:", Employees);
-    console.log("Stations:", Stations);
-    console.log("Pairs:", Pairs);
+        console.log("Orders:", Orders);
+        console.log("Employees:", Employees);
+        console.log("Stations:", Stations);
+        console.log("Pairs:", Pairs);
 
-    // Add additional logic here if needed
-    console.log("Execution completed.");
+        // Add additional logic here if needed
+        console.log("Execution completed.");
+    } catch (error) {
+        console.error("Error during execution:", error);
+    }
+
+    // Call the function again after a delay (e.g., 5 seconds)
+    setTimeout(run, 5000);
 }
 
-// Run the script
-run().catch(error => console.error("Error during execution:", error));
+// Start the infinite loop
+run();
