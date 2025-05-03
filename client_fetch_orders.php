@@ -17,7 +17,7 @@ if ($conn->connect_error) {
 }
 
 $sql = "SELECT *
-FROM orders;";
+FROM orders ORDER BY order_time DESC;";
 
 $result = $conn->query($sql);
 
