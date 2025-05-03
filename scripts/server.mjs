@@ -142,6 +142,7 @@ async function fetchPairs() {
     });
 }
 
+
 async function updatePairs() {
     console.log("Updating pairs...");
     const now = new Date();
@@ -170,6 +171,29 @@ async function completeOrder(orderId) {
         console.error(`Error completing order ${orderId}:`, data.error);
     } else {
         console.log(`Order ${orderId} completed successfully.`);
+    }
+}
+
+async function fillPairs(match) {
+    console.log("Filling pairs...");
+
+    const response = await fetch('http://localhost/database_update_pairs.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ 
+            orderId: match.order.id_order, 
+            employeeId: match.employee.id,
+            orderTime: match.order.order_time,
+            endTime: pathTime(findShortestPath(match.order.station, match.order.destination))
+        })
+    });
+
+    const data = await response.json();
+    if (data.error) {
+        console.error('Error filling pairs:', data.error);
+        return;
     }
 }
 
