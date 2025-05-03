@@ -77,7 +77,7 @@ function fetchAndDisplayEmployees() {
                 rowElement.innerHTML = `
                 <td>${row.id_employee}</td>
                 <td>${row.current_station}</td>
-                <td>${row.status}</td>
+                <td>${status}</td>
                 `;
                 mainContainer.appendChild(rowElement);
             });
