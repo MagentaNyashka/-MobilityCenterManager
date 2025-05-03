@@ -1,0 +1,16 @@
+[Unit]
+Description=MobileCenter.js App
+After=network.target
+
+[Service]
+ExecStart=/usr/bin/npm run start
+WorkingDirectory=/var/www/ip_site
+Restart=always
+User=nyashka
+Environment=NODE_ENV=production
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=mobile-center-js
+
+[Install]
+WantedBy=multi-user.target
