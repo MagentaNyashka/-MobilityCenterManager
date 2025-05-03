@@ -14,20 +14,25 @@ function fetchAndDisplayOrders() {
             mainContainer.innerHTML = '';
 
             data.forEach(row => {
-                let color = '#ff0000';
-                if (row.order_status === 'pending') {
-                    color = '#ffff00';
-                } else if (row.order_status === 'completed') {
-                    color = '#00ff00';
-                }
-
                 const rowElement = document.createElement('tr');
+                let status;
+                if(row.order_status === 'pending') {
+                    status = 'Pending';
+                }
+                else if(row.order_status === 'in_progress') {
+                    status = 'In Progress';
+                }
+                else if(row.order_status === 'completed') {
+                    status = 'Completed';
+                } else {
+                    status = 'Unknown';
+                }
                 rowElement.innerHTML = `
                 <td>${row.id_order}</td>
                 <td>${row.id_user}</td>
                 <td>${row.station}</td>
                 <td>${row.order_time}</td>
-                <td>${row.order_status}</td>
+                <td>${status}</td>
                 `;
                 mainContainer.appendChild(rowElement);
             });
@@ -57,6 +62,18 @@ function fetchAndDisplayEmployees() {
                 }
 
                 const rowElement = document.createElement('tr');
+                let status;
+                if(row.status === 'free') {
+                    status = 'Free';
+                }
+                else if(row.status === 'busy') {
+                    status = 'Busy';
+                }
+                else if(row.status === 'on_break') {
+                    status = 'On Break';
+                } else {
+                    status = 'Unknown';
+                }
                 rowElement.innerHTML = `
                 <td>${row.id_employee}</td>
                 <td>${row.current_station}</td>
