@@ -80,6 +80,7 @@ function fetchAndDisplayPairs() {
 }
 
 function fetchAndDisplayAll() {
+    console.log('Fetching and displaying all data...');
     fetchAndDisplayOrders();
     fetchAndDisplayEmployees();
     fetchAndDisplayPairs();
