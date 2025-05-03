@@ -224,6 +224,72 @@ async function makePairs(){
     }
 }
 
+function pathTime(path){
+    let time = 0;
+
+    try{
+    for(let i = 0; i < path.length; i++){
+        const station = Graph[path[i]];
+        station.forEach(node => {
+            if(node.to === path[i+1]){
+                time += node.travel_time;
+            }
+        })
+    }
+
+    return time;
+    }
+    catch(error){
+        return Infinity;
+    }
+}
+
+function findShortestPath(start, end) {
+    if (!Graph[start] || !Graph[end]) {
+        console.error(`Invalid start (${start}) or end (${end}) node`);
+        return null;
+    }
+
+    const distances = {};
+    const previous = {};
+    const priorityQueue = [];
+
+    for (const node in Graph) {
+        distances[node] = Infinity;
+        previous[node] = null;
+    }
+    distances[start] = 0;
+    priorityQueue.push({ node: start, distance: 0 });
+
+    while (priorityQueue.length > 0) {
+        priorityQueue.sort((a, b) => a.distance - b.distance);
+        const { node: currentNode } = priorityQueue.shift();
+
+        if (currentNode === end) {
+            const path = [];
+            let current = end;
+            while (current) {
+                path.unshift(current);
+                current = previous[current];
+            }
+            return path;
+        }
+
+        for (const neighbor of Graph[currentNode]) {
+            const { to: neighborNode, travel_time } = neighbor;
+            const newDistance = distances[currentNode] + parseFloat(travel_time);
+
+            if (newDistance < distances[neighborNode]) {
+                distances[neighborNode] = newDistance;
+                previous[neighborNode] = currentNode;
+                priorityQueue.push({ node: neighborNode, distance: newDistance });
+            }
+        }
+    }
+
+    console.warn(`No path found from ${start} to ${end}`);
+    return null;
+}
 
 async function run() {
     console.log("Starting execution...");
