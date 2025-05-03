@@ -166,8 +166,8 @@ function updateOrderStatus(orderId, newStatus) {
                 if (a.status === 'free' && b.status !== 'free') return -1;
                 if (a.status !== 'free' && b.status === 'free') return 1;
 
-                const pathA = findShortestPath(a.current_station, order.station).length;
-                const pathB = findShortestPath(b.current_station, order.station).length;
+                const pathA = pathTime(findShortestPath(a.current_station, order.station));
+                const pathB = pathTime(findShortestPath(b.current_station, order.station));
 
                 const distanceA = pathA ? pathA : Infinity;
                 const distanceB = pathB ? pathB : Infinity;

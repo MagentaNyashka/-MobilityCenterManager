@@ -46,8 +46,13 @@ try {
     $stmt2->close();
 
     // 3. employees
-    $stmt3 = $conn->prepare("UPDATE employees SET status = 'busy' WHERE id_employee = ?");
-    $stmt3->bind_param("i", $employeeId);
+    $stmt3 = $conn->prepare("UPDATE employees SET status = 'busy', end_time = ?, current_station = (
+        SELECT destination
+        FROM orders
+        WHERE id_order = ?
+    ) WHERE id_employee = ?
+     ");
+    $stmt3->bind_param("sii", $end, $orderId, $employeeId);
     $stmt3->execute();
     $stmt3->close();
 
