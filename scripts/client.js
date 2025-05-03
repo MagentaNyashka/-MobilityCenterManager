@@ -90,5 +90,5 @@ document.addEventListener('DOMContentLoaded', function () {
     console.log('Fetching and displaying data...');
     fetchAndDisplayAll();
 
-    setInterval(fetchAndDisplayAll, 5000);
+    setInterval(fetchAndDisplayAll, 1000);
 });
