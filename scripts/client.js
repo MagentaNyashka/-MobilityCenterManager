@@ -8,6 +8,10 @@ function fetchAndDisplayOrders() {
             }
 
             const mainContainer = document.getElementById('orders-table-body');
+            if(mainContainer === null) {
+                return;
+            }
+            mainContainer.innerHTML = '';
 
             data.forEach(row => {
                 let color = '#ff0000';
@@ -41,6 +45,10 @@ function fetchAndDisplayEmployees() {
             }
 
             const mainContainer = document.getElementById('employees-table-body');
+            if(mainContainer === null) {
+                return;
+            }
+            mainContainer.innerHTML = '';
 
             data.forEach(row => {
                 let color = '#ff0000';
