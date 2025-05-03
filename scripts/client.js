@@ -7,8 +7,7 @@ function fetchAndDisplayOrders() {
                 return;
             }
 
-            const mainContainer = document.getElementById('data_container_orders');
-            mainContainer.innerHTML = '<h1>ORDERS</h1><h2>id_order | id_user | station | order_time | order_status</h2>';
+            const mainContainer = document.getElementById('orders-table-body');
 
             data.forEach(row => {
                 let color = '#ff0000';
@@ -18,10 +17,14 @@ function fetchAndDisplayOrders() {
                     color = '#00ff00';
                 }
 
-                const rowElement = document.createElement('div');
-                rowElement.className = 'col';
-                rowElement.style = `color: ${color}`;
-                rowElement.innerHTML = `<p>${row.id_order} | ${row.id_user} | ${row.station} | ${row.order_time} | ${row.order_status}</p>`;
+                const rowElement = document.createElement('tr');
+                rowElement.innerHTML = `
+                <td>${row.id_order}</td>
+                <td>${row.id_user}</td>
+                <td>${row.station}</td>
+                <td>${row.order_time}</td>
+                <td>${row.order_status}</td>
+                `;
                 mainContainer.appendChild(rowElement);
             });
         })
@@ -37,8 +40,7 @@ function fetchAndDisplayEmployees() {
                 return;
             }
 
-            const mainContainer = document.getElementById('data_container_employees');
-            mainContainer.innerHTML = '<h1>EMPLOYEES</h1><h2>id | current_station | status</h2>';
+            const mainContainer = document.getElementById('employees-table-body');
 
             data.forEach(row => {
                 let color = '#ff0000';
@@ -46,10 +48,12 @@ function fetchAndDisplayEmployees() {
                     color = '#00ff00';
                 }
 
-                const rowElement = document.createElement('div');
-                rowElement.className = 'col';
-                rowElement.style = `color: ${color}`;
-                rowElement.innerHTML = `<p>${row.id_employee} | ${row.current_station} | ${row.status}</p>`;
+                const rowElement = document.createElement('tr');
+                rowElement.innerHTML = `
+                <td>${row.id_employee}</td>
+                <td>${row.current_station}</td>
+                <td>${row.status}</td>
+                `;
                 mainContainer.appendChild(rowElement);
             });
         })
