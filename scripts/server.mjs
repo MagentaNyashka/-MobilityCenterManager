@@ -1,4 +1,4 @@
-const fetch = require('node-fetch'); // Install this package using `npm install node-fetch`
+import fetch from 'node-fetch';
 
 let Orders = [];
 let Employees = [];
