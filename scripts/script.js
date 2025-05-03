@@ -458,9 +458,7 @@ async function run() {
     }
 }
 
-document.addEventListener('DOMContentLoaded', function () {
-    console.log("Document loaded");
-    setInterval(() => {
-        run();
-    }, 1500);
-});
+console.log("Script loaded. Starting execution...");
+setInterval(() => {
+    run();
+}, 1500);
