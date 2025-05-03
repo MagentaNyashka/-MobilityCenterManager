@@ -1,5 +1,5 @@
 function fetchAndDisplayOrders() {
-    fetch('client_fetch_orders.php')
+    fetch('/client_fetch_orders.php')
         .then(response => response.json())
         .then(data => {
             if (data.error) {
@@ -32,7 +32,7 @@ function fetchAndDisplayOrders() {
 }
 
 function fetchAndDisplayEmployees() {
-    fetch('client_fetch_employees.php')
+    fetch('/client_fetch_employees.php')
         .then(response => response.json())
         .then(data => {
             if (data.error) {
@@ -61,7 +61,7 @@ function fetchAndDisplayEmployees() {
 }
 
 function fetchAndDisplayPairs() {
-    fetch('database_fetch_pairs.php')
+    fetch('/database_fetch_pairs.php')
         .then(response => response.json())
         .then(data => {
             if (data.error) {
