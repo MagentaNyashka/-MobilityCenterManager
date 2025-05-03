@@ -142,20 +142,112 @@ async function fetchPairs() {
     });
 }
 
+async function updatePairs() {
+    console.log("Updating pairs...");
+    const now = new Date();
+
+    for (const pair of Pairs) {
+        const endTime = new Date(pair.end_time.replace(' ', 'T'));
+        if (now > endTime) {
+            console.log(`Completing order: ${pair.order}`);
+            await completeOrder(pair.order);
+        }
+    }
+}
+
+async function completeOrder(orderId) {
+    console.log(`Completing order ${orderId}...`);
+    const response = await fetch('http://localhost/database_complete_order.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ orderId })
+    });
+
+    const data = await response.json();
+    if (data.error) {
+        console.error(`Error completing order ${orderId}:`, data.error);
+    } else {
+        console.log(`Order ${orderId} completed successfully.`);
+    }
+}
+
+async function stableMarriage(orders, employees) {
+    const unmatchedOrders = [...orders];
+    const unmatchedEmployees = [...employees];
+
+    const matches = [];
+
+    while (unmatchedOrders.length > 0) {
+        const order = unmatchedOrders.shift();
+        console.log(`Finding match for ${order.id_order}`);
+        console.log(unmatchedEmployees.length, order.employees_required)
+        while(unmatchedEmployees.length > 0 && order.employees_required > 0){
+            unmatchedEmployees.sort((a, b) => {
+                if (a.status === 'free' && b.status !== 'free') return -1;
+                if (a.status !== 'free' && b.status === 'free') return 1;
+
+                const pathA = pathTime(findShortestPath(a.current_station, order.station));
+                const pathB = pathTime(findShortestPath(b.current_station, order.station));
+
+                const distanceA = pathA ? pathA : Infinity;
+                const distanceB = pathB ? pathB : Infinity;
+
+                return distanceA - distanceB;
+            });
+
+            const bestMatch = unmatchedEmployees.shift();
+
+            if (bestMatch) {
+                console.log(`Found best match for ${order.id_order} -> ${bestMatch.id}`)
+                order.employees_required -= 1;
+                matches.push({ order, employee: bestMatch });
+            } else {
+                console.warn(`No available employee for order ${order.id_order}`);
+            }
+        }
+    }
+
+    Matches = matches;
+}
+
+async function makePairs(){
+    console.log("Making pairs...");
+    if(Matches.length > 0){
+        Matches.forEach(match => { 
+            fillPairs(match);                
+        });
+    }
+    else{
+        // console.warn('No orders to process');
+    }
+}
+
+
 async function run() {
     console.log("Starting execution...");
     try {
         await fetchEmployees();
         await fetchOrders();
         await fetchStations();
-        await fetchPairs();
 
         console.log("Orders:", Orders);
         console.log("Employees:", Employees);
         console.log("Stations:", Stations);
         console.log("Pairs:", Pairs);
 
-        // Add additional logic here if needed
+        if(Orders.length > 0) {
+            await stableMarriage(Orders, Employees);
+        }
+
+        await makePairs();
+
+        await resetObjects();
+
+        await fetchPairs();
+        await updatePairs();
+
         console.log("Execution completed.");
     } catch (error) {
         console.error("Error during execution:", error);
