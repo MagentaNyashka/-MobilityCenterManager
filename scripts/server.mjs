@@ -197,6 +197,15 @@ async function fillPairs(match) {
     }
 }
 
+function resetObjects(){
+    console.log("Reseting objects...");
+    Orders = [];
+    Employees = [];
+    Matches = [];
+    Stations = [];
+    Pairs = [];
+}
+
 async function stableMarriage(orders, employees) {
     const unmatchedOrders = [...orders];
     const unmatchedEmployees = [...employees];
