@@ -77,7 +77,7 @@ function buildGraph(stations) {
 
 async function fetchOrders() {
     console.log("Fetching orders...");
-    const response = await fetch('http://88.210.58.93/database_fetch_orders.php');
+    const response = await fetch('http://localhost/database_fetch_orders.php');
     const data = await response.json();
 
     if (data.error) {
@@ -93,7 +93,7 @@ async function fetchOrders() {
 
 async function fetchEmployees() {
     console.log("Fetching employees...");
-    const response = await fetch('http://88.210.58.93/database_fetch_employees.php');
+    const response = await fetch('http://localhost/database_fetch_employees.php');
     const data = await response.json();
 
     if (data.error) {
@@ -109,7 +109,7 @@ async function fetchEmployees() {
 
 async function fetchStations() {
     console.log("Fetching stations...");
-    const response = await fetch('http://88.210.58.93/database_fetch_stations.php');
+    const response = await fetch('http://localhost/database_fetch_stations.php');
     const data = await response.json();
 
     if (data.error) {
@@ -128,7 +128,7 @@ async function fetchStations() {
 
 async function fetchPairs() {
     console.log("Fetching pairs...");
-    const response = await fetch('http://88.210.58.93/database_fetch_pairs.php');
+    const response = await fetch('http://localhost/database_fetch_pairs.php');
     const data = await response.json();
 
     if (data.error) {
