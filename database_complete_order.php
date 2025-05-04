@@ -38,21 +38,21 @@ try {
         throw new Exception("No matching pair found for order_id: $orderId");
     }
 
-    $stmt = $conn->prepare("UPDATE employees SET status = 'free' WHERE id_employee = ?");
-    $stmt->bind_param("i", $employeeId);
-    if (!$stmt->execute()) {
+    $stmt1 = $conn->prepare("UPDATE employees SET status = 'free' WHERE id_employee = ?");
+    $stmt1->bind_param("i", $employeeId);
+    if (!$stmt1->execute()) {
         throw new Exception("Failed to update employee status");
     }
 
-    $stmt = $conn->prepare("UPDATE orders SET order_status = 'completed' WHERE id_order = ?");
-    $stmt->bind_param("i", $orderId);
-    if (!$stmt->execute()) {
+    $stmt2 = $conn->prepare("UPDATE orders SET order_status = 'completed' WHERE id_order = ?");
+    $stmt2->bind_param("i", $orderId);
+    if (!$stmt2->execute()) {
         throw new Exception("Failed to update order status");
     }
 
-    $stmt = $conn->prepare("DELETE FROM pairs WHERE order_id = ?");
-    $stmt->bind_param("i", $orderId);
-    if (!$stmt->execute()) {
+    $stmt3 = $conn->prepare("DELETE FROM pairs WHERE order_id = ?");
+    $stmt3->bind_param("i", $orderId);
+    if (!$stmt3->execute()) {
         throw new Exception("Failed to delete pair");
     }
 
