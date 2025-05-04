@@ -16,8 +16,8 @@ function fetchAndDisplayOrders() {
             data.forEach(row => {
                 const rowElement = document.createElement('tr');
                 let status;
-                if(row.order_status === 'pending') {
-                    status = 'Pending';
+                if(row.order_status === 'active') {
+                    status = 'Active';
                 }
                 else if(row.order_status === 'in_progress') {
                     status = 'In Progress';
@@ -31,7 +31,9 @@ function fetchAndDisplayOrders() {
                 <td>${row.id_order}</td>
                 <td>${row.id_user}</td>
                 <td>${row.station}</td>
+                <td>${row.destination}</td>
                 <td>${row.order_time}</td>
+                <td>${row.employees_required}</td>
                 <td>${status}</td>
                 `;
                 mainContainer.appendChild(rowElement);
@@ -78,6 +80,7 @@ function fetchAndDisplayEmployees() {
                 <td>${row.id_employee}</td>
                 <td>${row.current_station}</td>
                 <td>${status}</td>
+                <td>${row.end_time}</td>
                 `;
                 mainContainer.appendChild(rowElement);
             });
