@@ -215,8 +215,9 @@ async function stableMarriage(orders, employees) {
     while (unmatchedOrders.length > 0) {
         const order = unmatchedOrders.shift();
         console.log(`Finding match for ${order.id_order}`);
-        console.log(unmatchedEmployees.length, order.employees_required)
-        while(unmatchedEmployees.length > 0 && order.employees_required > 0){
+        console.log(unmatchedEmployees.length, order.employees_required);
+
+        while (unmatchedEmployees.length > 0 && order.employees_required > 0) {
             unmatchedEmployees.sort((a, b) => {
                 if (a.status === 'free' && b.status !== 'free') return -1;
                 if (a.status !== 'free' && b.status === 'free') return 1;
@@ -233,15 +234,16 @@ async function stableMarriage(orders, employees) {
             const bestMatch = unmatchedEmployees.shift();
 
             if (bestMatch) {
-                console.log(`Found best match for ${order.id_order} -> ${bestMatch.id}`)
+                console.log(`Found best match for ${order.id_order} -> ${bestMatch.id}`);
                 order.employees_required -= 1;
                 matches.push({ order, employee: bestMatch });
             } else {
                 console.warn(`No available employee for order ${order.id_order}`);
             }
         }
-        if(order.employees_required == 0){
-            Matches.push(matches);
+
+        if (order.employees_required === 0) {
+            Matches.push(...matches);
         }
     }
 }
