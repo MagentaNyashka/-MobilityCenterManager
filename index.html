@@ -2,25 +2,65 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mobility Center Manager</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
   <nav class="navbar navbar-expand-lg navbar-light bg-light px-3">
-    <a class="navbar-brand" href="#">Company</a>
+    <a class="navbar-brand" href="#">Mobility Center Manager</a>
     <div class="collapse navbar-collapse">
       <ul class="navbar-nav ms-auto">
         <li class="nav-item">
-          <a class="nav-link" href="employees/index.html">Employees</a>
+          <a class="nav-link" href="employees/index.html">Сотрудники</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="orders/index.html">Orders</a>
+          <a class="nav-link" href="orders/index.html">Заказы</a>
         </li>
       </ul>
     </div>
   </nav>
   <div class="container mt-5">
-    <h1>Welcome to the Dashboard</h1>
+    <h1 class="mb-4">Добро пожаловать в систему автоматизации Центра Мобилизации Метро!</h1>
+    <p>
+      Этот проект предназначен для автоматического распределения запросов людей с ограниченными возможностями между сотрудниками Центра Мобилизации.
+    </p>
+    <h3>Основные возможности:</h3>
+    <ul>
+      <li><strong>Мониторинг сотрудников и заказов:</strong> Просмотр текущего статуса сотрудников и активных запросов.</li>
+      <li><strong>Автоматическое распределение:</strong> Система автоматически назначает сотрудников на запросы, учитывая их местоположение и доступность.</li>
+      <li><strong>Графическое представление данных:</strong> Удобный интерфейс для визуализации данных о сотрудниках, заказах и маршрутах.</li>
+    </ul>
+    <h3>Технологии:</h3>
+    <ul>
+      <li><strong>Frontend:</strong> HTML, CSS (Bootstrap) для создания удобного интерфейса.</li>
+      <li><strong>Backend:</strong> PHP для работы с базой данных MySQL.</li>
+      <li><strong>Серверная логика:</strong> Node.js для выполнения алгоритмов распределения и обновления данных.</li>
+    </ul>
+    <h3>Как это работает:</h3>
+    <ol>
+      <li>Система собирает данные о сотрудниках, заказах и станциях метро из базы данных.</li>
+      <li>Алгоритм распределения назначает сотрудников на запросы, минимизируя время ожидания.</li>
+      <li>Администратор может отслеживать статус выполнения запросов через веб-интерфейс.</li>
+    </ol>
+    <h3>Для кого это:</h3>
+    <p>
+      Для сотрудников Центра Мобилизации Метро, чтобы упростить управление запросами, и для администраторов, чтобы контролировать эффективность работы системы.
+    </p>
+    <p>Начните работу с системы прямо сейчас, выбрав раздел в меню!</p>
   </div>
+  <footer class="bg-light text-center text-lg-start mt-5">
+    <div class="container p-4">
+      <h5>Контакты</h5>
+      <ul class="list-unstyled">
+        <li><a href="https://github.com/MagentaNyashka" target="_blank">GitHub</a></li>
+        <li><a href="https://t.me/magenta_nyashka" target="_blank">Telegram</a></li>
+        <li><a href="https://discord.com/users/magenta_nyashka" target="_blank">Discord</a></li>
+      </ul>
+    </div>
+    <div class="text-center p-3 bg-dark text-white">
+      © 2025 Mobility Center Manager
+    </div>
+  </footer>
 </body>
 </html>
