@@ -240,9 +240,10 @@ async function stableMarriage(orders, employees) {
                 console.warn(`No available employee for order ${order.id_order}`);
             }
         }
+        if(order.employees_required == 0){
+            Matches.push(matches);
+        }
     }
-
-    Matches = matches;
 }
 
 async function makePairs(){
