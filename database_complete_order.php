@@ -38,7 +38,7 @@ try {
         throw new Exception("No matching pair found for order_id: $orderId");
     }
 
-    $stmt1 = $conn->prepare("UPDATE employees SET status = 'free' WHERE id_employee = ?");
+    $stmt1 = $conn->prepare("UPDATE employees SET status = 'free' WHERE id_employee = ? AND end_time <= NOW()");
     $stmt1->bind_param("i", $employeeId);
     if (!$stmt1->execute()) {
         throw new Exception("Failed to update employee status");
