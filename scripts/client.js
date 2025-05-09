@@ -59,7 +59,6 @@ function fetchAndDisplayPairs() {
 
             data.forEach(row => {
                 const rowElement = document.createElement('tr');
-                let status;
                 rowElement.innerHTML = `
                 <td>${row.id}</td>
                 <td>${row.order_id}</td>
