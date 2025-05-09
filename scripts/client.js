@@ -42,6 +42,37 @@ function fetchAndDisplayOrders() {
         .catch(error => console.error('Error:', error));
 }
 
+function fetchAndDisplayPairs() {
+    fetch('/client_fetch_pairs.php')
+        .then(response => response.json())
+        .then(data => {
+            if (data.error) {
+                console.error('Error fetching pairs:', data.error);
+                return;
+            }
+
+            const mainContainer = document.getElementById('pairs-table-body');
+            if(mainContainer === null) {
+                return;
+            }
+            mainContainer.innerHTML = '';
+
+            data.forEach(row => {
+                const rowElement = document.createElement('tr');
+                let status;
+                rowElement.innerHTML = `
+                <td>${row.id}</td>
+                <td>${row.order_id}</td>
+                <td>${row.employee_id}</td>
+                <td>${row.order_time}</td>
+                <td>${row.end_time}</td>
+                `;
+                mainContainer.appendChild(rowElement);
+            });
+        })
+        .catch(error => console.error('Error:', error));
+}
+
 function fetchAndDisplayEmployees() {
     fetch('/client_fetch_employees.php')
         .then(response => response.json())
@@ -88,34 +119,11 @@ function fetchAndDisplayEmployees() {
         .catch(error => console.error('Error:', error));
 }
 
-function fetchAndDisplayPairs() {
-    fetch('/database_fetch_pairs.php')
-        .then(response => response.json())
-        .then(data => {
-            if (data.error) {
-                console.error('Error fetching pairs:', data.error);
-                return;
-            }
-
-            const mainContainer = document.getElementById('data_container_pairs');
-            mainContainer.innerHTML = '<h1>PAIRS</h1><h2>id_order | employee_id | order_time | end_time</h2>';
-
-            data.forEach(row => {
-                const rowElement = document.createElement('div');
-                rowElement.className = 'col';
-                rowElement.style = 'color: #00ff00';
-                rowElement.innerHTML = `<p>${row.order_id} | ${row.employee_id} | ${row.order_time} | ${row.end_time}</p>`;
-                mainContainer.appendChild(rowElement);
-            });
-        })
-        .catch(error => console.error('Error:', error));
-}
-
 function fetchAndDisplayAll() {
     console.log('Fetching and displaying all data...');
     fetchAndDisplayOrders();
     fetchAndDisplayEmployees();
-    // fetchAndDisplayPairs();
+    fetchAndDisplayPairs();
 }
 
 document.addEventListener('DOMContentLoaded', function () {
